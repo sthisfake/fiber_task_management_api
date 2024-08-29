@@ -3,7 +3,6 @@ package database
 import (
 	"log"
 	"task/config"
-	"task/models"
 
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
@@ -19,5 +18,9 @@ func Connect() {
 		log.Fatal("Failed to connect to the database: ", err)
 	}
 
-	DB.AutoMigrate(&models.User{})
+	// create extention for uuid generator
+	err = DB.Exec("CREATE EXTENSION IF NOT EXISTS \"uuid-ossp\"").Error
+	if err != nil {
+		log.Fatalf("Failed to create uuid-ossp extension: %v", err)
+	}
 }
